@@ -99,16 +99,7 @@ class MergePropertyDatasets(object):
             direction = "Input"
         )
     
-        param2 = arcpy.Parameter(
-            displayName = "Overwrite Destination FileGDB",
-            name = "overwrite",
-            datatype = "Boolean",
-            parameterType = "Optional",
-            direction = "Input"
-        )
-        param2.value = False
-    
-        return [param0, param1, param2]
+        return [param0, param1]
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
@@ -129,7 +120,7 @@ class MergePropertyDatasets(object):
         options = Options(
             source_dir = parameters[0].valueAsText,
             output_file_gdb = parameters[1].valueAsText,
-            overwrite_file_gdb = parameters[2].value,
+            overwrite_file_gdb = False,
             create_relationships = False
         )
         run_merge(options)
