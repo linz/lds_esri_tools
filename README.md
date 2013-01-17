@@ -26,9 +26,9 @@ These tools support the following layers and tables:
 
 This python code is both a command line script and a ArcGIS 10.1 Python ArcTool.
 
-# Command line usage
+## Command line usage
 
-The commandline script can be can be used in ArcGIS 10.X. It has the following options:
+The command line script can be can be used in ArcGIS 10.X. It has the following options:
 
 ```
 Usage: lds_merge_property_data.pyt [options] source_lds_dir destination_file_gdb
@@ -46,17 +46,19 @@ If you are using ArcGIS 10.1 an example windows command line to merge a director
 C:\Python27\ArcGIS10.1\python.exe lds_merge_property_data.pyt -r C:\Temp\working\data C:\Temp\working\lds_property.gdb
 ```
 
-# ArcTool Usage for ArcGIS 10.1 users.
+This will create the lds_property.gdb database and create relationships between all relevant features classes and tables that have been imported.
+
+## ArcTool Usage for ArcGIS 10.1 users.
 
 The ArcGIS Python ArcTool can only be used in ArcGIS 10.1 or higher and provides two tools which can be run within ArcMap or ArcCatalog:
 
 ### LDS merge property datasets
 
-Takes a directory of unzipped LDS FileGDB layers or tables (one fileGDB for each). This tool with then import each layer and table it finds and imports them into a single destination FileGDB. 
+Takes a directory of unzipped LDS FileGDB layers or tables (one FileGDB for each). This tool with then import each layer and table it finds and imports them into a single destination FileGDB. 
 
 ### LDS relationships builder for property datasets
 
-Build relationships between Parcels, Survey Plans Layers and assoicated [tables](http://data.linz.govt.nz/#/tables/category/property-ownership-boundaries).
+Build relationships between Parcels, Survey Plans Layers and associated [tables](http://data.linz.govt.nz/#/tables/category/property-ownership-boundaries).
 
 
 
