@@ -58,7 +58,7 @@ Takes a directory of unzipped LDS FileGDB layers or tables (one FileGDB for each
 
 ### LDS relationships builder for property datasets tool
 
-Build relationships between Parcels, Survey Plans Layers and associated [tables](http://data.linz.govt.nz/#/tables/category/property-ownership-boundaries).
+Build relationships between Parcels, Survey Plans Layers and associated [tables](http://data.linz.govt.nz/#/tables/category/property-ownership-boundaries). Note: building relationships requires a higher licence than ArcView
 
 # Help
 

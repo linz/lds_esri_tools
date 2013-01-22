@@ -24,7 +24,7 @@ from optparse import OptionParser
 __author__ = 'Jeremy Palmer'
 __date__ = 'January 2013'
 __copyright__ = '2013 Crown copyright (c)'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 Options = collections.namedtuple('Options', 'source_dir, output_file_gdb, overwrite_file_gdb, create_relationships')
 
@@ -147,7 +147,10 @@ class CreateRelationships(object):
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
-        return True
+        if arcpy.ProductInfo() == "ArcView":
+            return False
+        else:
+            return True
 
     def updateParameters(self, parameters):
         """Modify the values and properties of parameters before internal
@@ -337,10 +340,13 @@ def run_merge(options):
 
 def create_relationships(options):
     if options.create_relationships:
+        if arcpy.ProductInfo() == "ArcView":
+            arcpy.AddWarning("Building relationships requires a higher licence than ArcView")
+            return False
         for parcel_layer in parcel_layers:
             add_parcel_relationships(options.output_file_gdb, parcel_layer)
         add_title_relationships(options.output_file_gdb)
-    return
+    return True
 
 def main():
     usage = "usage: %prog [options] source_lds_dir destination_file_gdb"
