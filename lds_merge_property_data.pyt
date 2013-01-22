@@ -81,8 +81,6 @@ class MergePropertyDatasets(object):
     def getParameterInfo(self):
         """Define parameter definitions"""
         
-        arcpy.overwriteoutput = True
-    
         param0 = arcpy.Parameter(
             displayName="LDS unzipped datasets directory containing FileGDBs",
             name = "source_dir",
