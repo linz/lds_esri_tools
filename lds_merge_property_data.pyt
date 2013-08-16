@@ -24,7 +24,7 @@ from optparse import OptionParser
 __author__ = 'Jeremy Palmer'
 __date__ = 'January 2013'
 __copyright__ = '2013 Crown copyright (c)'
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 Options = collections.namedtuple('Options', 'source_dir, output_file_gdb, overwrite_file_gdb, create_relationships')
 
@@ -45,6 +45,8 @@ layers = {
     'survey_affected_parcels'    : 'NZ Survey Affected Parcels List',
     'title_parcel_association'   : 'NZ Title Parcel Association List',
     'survey_plans'               : 'NZ Survey Plans',
+    'title_memorials'            : 'NZ Title Memorials List',
+    'title_memorials_additional_text' : 'NZ Title Memorials Additional Text List',
 }
 
 parcel_layers = [
@@ -271,6 +273,10 @@ def add_title_relationships(output_file_gdb):
     title_estates_path = output_path = os.path.join(output_file_gdb, title_estates_name)
     title_owners_name = filegdb_entity(layers['title_owners'])
     title_owners_path = output_path = os.path.join(output_file_gdb, title_owners_name)
+    title_memorials_name = filegdb_entity(layers['title_memorials'])
+    title_memorials_path = output_path = os.path.join(output_file_gdb, title_memorials_name)
+    title_memorials_additional_text_name = filegdb_entity(layers['title_memorials_additional_text'])
+    title_memorials_additional_text_path = output_path = os.path.join(output_file_gdb, title_memorials_additional_text_name)
     relationship = os.path.join(output_file_gdb, "titles_has_estates")
     if arcpy.Exists(titles_path) and arcpy.Exists(title_estates_path) and not arcpy.Exists(relationship):
         arcpy.AddMessage("Creating title to titles estates relationship")
@@ -291,7 +297,7 @@ def add_title_relationships(output_file_gdb):
         )
         
     relationship = os.path.join(output_file_gdb, "title_estates_has_owners")
-    if arcpy.Exists(titles_path) and arcpy.Exists(title_estates_path)  and not arcpy.Exists(relationship):
+    if arcpy.Exists(title_estates_path) and arcpy.Exists(title_owners_path)  and not arcpy.Exists(relationship):
         arcpy.AddMessage("Creating title estates to titles owners relationship")
         arcpy.CreateRelationshipClass_management(
             title_estates_path,
@@ -305,6 +311,44 @@ def add_title_relationships(output_file_gdb):
             "NONE",
             "id",
             "tte_id",
+            "",
+            ""
+        )
+    
+    relationship = os.path.join(output_file_gdb, "title_has_memorials")
+    if arcpy.Exists(titles_path) and arcpy.Exists(title_memorials_path)  and not arcpy.Exists(relationship):
+        arcpy.AddMessage("Creating title to title memorials relationship")
+        arcpy.CreateRelationshipClass_management(
+            titles_path,
+            title_memorials_path,
+            relationship,
+            "SIMPLE",
+            title_memorials_name,
+            titles_name,
+            "NONE",
+            "ONE_TO_MANY",
+            "NONE",
+            "title_no",
+            "title_no",
+            "",
+            ""
+        )
+
+    relationship = os.path.join(output_file_gdb, "title_memorials_has_additional_text")
+    if arcpy.Exists(title_memorials_path) and arcpy.Exists(title_memorials_additional_text_path) and not arcpy.Exists(relationship):
+        arcpy.AddMessage("Creating title memorials to additional text relationship")
+        arcpy.CreateRelationshipClass_management(
+            title_memorials_path,
+            title_memorials_additional_text_path,
+            relationship,
+            "SIMPLE",
+            title_memorials_additional_text_name,
+            title_memorials_name,
+            "NONE",
+            "ONE_TO_MANY",
+            "NONE",
+            "id",
+            "ttm_id",
             "",
             ""
         )
