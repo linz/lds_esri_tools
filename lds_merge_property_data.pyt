@@ -24,7 +24,7 @@ from optparse import OptionParser
 __author__ = 'Jeremy Palmer'
 __date__ = 'January 2013'
 __copyright__ = '2013 Crown copyright (c)'
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 Options = collections.namedtuple('Options', 'source_dir, output_file_gdb, overwrite_file_gdb, create_relationships')
 
@@ -45,7 +45,7 @@ layers = {
     'survey_affected_parcels'    : 'NZ Survey Affected Parcels List',
     'title_parcel_association'   : 'NZ Title Parcel Association List',
     'survey_plans'               : 'NZ Survey Plans',
-    'title_memorials'            : 'NZ Title Memorials List',
+    'title_memorials'            : 'NZ Title Memorials List Including Mortgages Leases Easements',
     'title_memorials_additional_text' : 'NZ Title Memorials Additional Text List',
 }
 
@@ -176,12 +176,17 @@ class CreateRelationships(object):
         return
 
 def dir_slug(layer_title):
-    return layer_title.replace(' ', '-').lower()[0:25]
+    return layer_title.replace(' ', '-').lower()[0:75]
 
 
 def layer_path(source_file_gdb_dir, layer_title):
     dir_slug_name = dir_slug(layer_title)
-    filegdb_item = filegdb_entity(layer_title)
+    #Handle inconsistency in the way LDS names memorials layer
+    if(layer_title=="NZ Title Memorials List Including Mortgages Leases Easements"):
+        filegdb_item = filegdb_entity("NZ_Title_Memorials_List__including_Mortgages__Leases__Easements_")
+    else:
+        filegdb_item = filegdb_entity(layer_title)
+ 
     dataset_dir = dir_slug_name
     filegdb_dir = dir_slug_name + '.gdb'
     path = os.path.join(source_file_gdb_dir, dir_slug_name, filegdb_dir, filegdb_item)
@@ -273,7 +278,7 @@ def add_title_relationships(output_file_gdb):
     title_estates_path = output_path = os.path.join(output_file_gdb, title_estates_name)
     title_owners_name = filegdb_entity(layers['title_owners'])
     title_owners_path = output_path = os.path.join(output_file_gdb, title_owners_name)
-    title_memorials_name = filegdb_entity(layers['title_memorials'])
+    title_memorials_name = filegdb_entity("NZ_Title_Memorials_List__including_Mortgages__Leases__Easements_")
     title_memorials_path = output_path = os.path.join(output_file_gdb, title_memorials_name)
     title_memorials_additional_text_name = filegdb_entity(layers['title_memorials_additional_text'])
     title_memorials_additional_text_path = output_path = os.path.join(output_file_gdb, title_memorials_additional_text_name)
@@ -371,7 +376,8 @@ def run_merge(options):
     
     for layer in layers:
         source_path = layer_path(options.source_dir, layers[layer])
-        name = os.path.split(source_path)[-1]
+        name = os.path.split(source_path)[-1]            
+
         if arcpy.Exists(source_path):
             output_path = os.path.join(options.output_file_gdb, name)
             if arcpy.Exists(output_path):
