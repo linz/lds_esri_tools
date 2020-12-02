@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 ################################################################################
 #
 # lds_merge_property_data.pyt
 #
-# Copyright 2013 Crown copyright (c)
+# Copyright 2020 Crown copyright (c)
 # Land Information New Zealand and the New Zealand Government.
 # All rights reserved
 #
@@ -10,7 +11,7 @@
 # LICENSE file for more information.
 #
 ################################################################################
-# ArcGIS 10.1 Python ArcTool tool to merge property and ownership FileGDBs
+# ArcGIS Python ArcTool tool to merge property and ownership FileGDBs
 # exported from LDS and to create relationships between feature classes/tables.
 ################################################################################
 
@@ -22,9 +23,9 @@ import collections
 from optparse import OptionParser
 
 __author__ = 'Jeremy Palmer'
-__date__ = 'January 2013'
-__copyright__ = '2013 Crown copyright (c)'
-__version__ = '1.0.3'
+__date__ = 'December 2020'
+__copyright__ = '2020 Crown copyright (c)'
+__version__ = '1.1.0'
 
 Options = collections.namedtuple('Options', 'source_dir, output_file_gdb, overwrite_file_gdb, create_relationships')
 
@@ -46,7 +47,7 @@ layers = {
     'title_parcel_association'   : 'NZ Title Parcel Association List',
     'survey_plans'               : 'NZ Survey Plans',
     'title_memorials'            : 'NZ Title Memorials List Including Mortgages Leases Easements',
-    'title_memorials_additional_text' : 'NZ Title Memorials Additional Text List',
+    'title_memorials_additional_text' : 'NZ Title Memorials Additional Text List'
 }
 
 parcel_layers = [
@@ -58,14 +59,14 @@ parcel_layers = [
     'strata_parcels',
     'non_primary_linear_parcels',
     'parcels',
-    'linear_parcels',
+    'linear_parcels'
 ]
 
 class Toolbox(object):
     def __init__(self):
         """Define the toolbox (the name of the toolbox is the name of the
         .pyt file)."""
-        self.label = "Toolbox"
+        self.label = "LDS ESRI Tools"
         self.alias = ""
 
         # List of tool classes associated with this toolbox
@@ -103,6 +104,10 @@ class MergePropertyDatasets(object):
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
+        if arcpy.ProductInfo() == "ArcView":
+            return False
+        else:
+            return True
         return True
 
     def updateParameters(self, parameters):
@@ -149,10 +154,7 @@ class CreateRelationships(object):
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
-        if arcpy.ProductInfo() == "ArcView":
-            return False
-        else:
-            return True
+        return True
 
     def updateParameters(self, parameters):
         """Modify the values and properties of parameters before internal
@@ -177,7 +179,6 @@ class CreateRelationships(object):
 
 def dir_slug(layer_title):
     return layer_title.replace(' ', '-').lower()[0:75]
-
 
 def layer_path(source_file_gdb_dir, layer_title):
     dir_slug_name = dir_slug(layer_title)
@@ -359,11 +360,10 @@ def add_title_relationships(output_file_gdb):
         )
     return
 
-
 def run_merge(options):
     file_path, extension = os.path.splitext(options.output_file_gdb)
     if extension != '.gdb':
-        print "Path: " + output_file_gdb + " is not a valid FileGDB directory"
+        print ("Path: " + output_file_gdb + " is not a valid FileGDB directory")
         exit(1)
     
     if not arcpy.Exists(options.output_file_gdb) or (options.overwrite_file_gdb and arcpy.Exists(options.output_file_gdb)):
@@ -397,6 +397,9 @@ def create_relationships(options):
             add_parcel_relationships(options.output_file_gdb, parcel_layer)
         add_title_relationships(options.output_file_gdb)
     return True
+
+"""
+#To be able to run this tool from the command line rather than via the ArcGIS UI, comment out the following:
 
 def main():
     usage = "usage: %prog [options] source_lds_dir destination_file_gdb"
@@ -436,3 +439,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""
