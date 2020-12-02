@@ -399,7 +399,7 @@ def create_relationships(options):
     return True
 
 """
-#To be able to run this tool from the command line rather than via the ArcGIS UI, comment out the following:
+#To be able to run this tool from the command line rather than via the ArcGIS UI, uncomment out the following:
 
 def main():
     usage = "usage: %prog [options] source_lds_dir destination_file_gdb"
